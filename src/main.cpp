@@ -1,18 +1,31 @@
 #include <Arduino.h>
 
-// put function declarations here:
-int myFunction(int, int);
+#include "machine_state.h"
+#include "serial_if.h"
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+void setup()
+{
+  pinMode(13, OUTPUT);
+  machineInit();
+  serialInit();
+  Serial.println("Controlador steper v1.0");
+
+  machinePostEvent(EV_INIT);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
+void loop()
+{
+   /* ===== INPUTS ===== */
+  serialUpdate();
+  //encoderUpdate();
+  //menuUpdate();
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+  /* ===== CORE ===== */
+  machineUpdate();   // 👈 AQUÍ se actualiza la FSM
+
+  /* ===== ACTUADORES ===== */
+  //stepperUpdate();
+
+  /* ===== UI ===== */
+  //displayUpdate();
 }
