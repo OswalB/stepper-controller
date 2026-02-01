@@ -2,30 +2,34 @@
 
 #include "machine_state.h"
 #include "serial_if.h"
+#include "stepper_ctrl.h"
 
 void setup()
 {
   pinMode(13, OUTPUT);
   machineInit();
+  stepperInit();
   serialInit();
   Serial.println("Controlador steper v1.0");
 
-  machinePostEvent(EV_INIT);
+  machinePostEvent({EV_INIT, 0, 0});
 }
 
 void loop()
 {
-   /* ===== INPUTS ===== */
+  /* ===== INPUTS ===== */
   serialUpdate();
-  //encoderUpdate();
-  //menuUpdate();
+  // encoderUpdate();
+  // menuUpdate();
 
   /* ===== CORE ===== */
-  machineUpdate();   // 👈 AQUÍ se actualiza la FSM
+  machineUpdate(); // 👈 AQUÍ se actualiza la FSM
 
   /* ===== ACTUADORES ===== */
-  //stepperUpdate();
+  // stepperUpdate();
+  // machineTick();
+  stepperTick(); // siempre corre, pero obedece flags internos
 
   /* ===== UI ===== */
-  //displayUpdate();
+  // displayUpdate();
 }
