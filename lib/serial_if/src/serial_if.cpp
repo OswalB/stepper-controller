@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "serial_if.h"
 #include "machine_state.h"
+#include "eeprom_data.h"
 
 /* ===== Forward declaration ===== */
 static void handleCommand(const String &cmd);
@@ -59,6 +60,10 @@ static void handleCommand(const String &cmd)
   {
     configPrint();
   }
+  else if (op == "eeprom_info")
+  {
+    printEEPROMInfo();
+  }
   else if (op == "speed")
   {
 
@@ -84,6 +89,9 @@ static void handleCommand(const String &cmd)
     ev.motorId = id;
     ev.value = value;
 
+    eepromData.motors[id].maxSpeed = value;
+    eepromMarkDirty();
+
     machinePostEvent(ev);
     Serial.println("Done");
   }
@@ -101,4 +109,5 @@ static void configPrint()
   Serial.print(" (");
   Serial.print(machineStateToStr(s)); // ← humano
   Serial.println(")");
+  Serial.println(eepromData.motors[0].maxSpeed);
 }

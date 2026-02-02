@@ -1,5 +1,7 @@
 #include <Arduino.h>
+#include <EEPROM.h>
 
+#include "eeprom_data.h"
 #include "machine_state.h"
 #include "serial_if.h"
 #include "stepper_ctrl.h"
@@ -7,10 +9,12 @@
 void setup()
 {
   pinMode(13, OUTPUT);
+
   machineInit();
   stepperInit();
   serialInit();
-  Serial.println("Controlador steper v1.0");
+  loadEEPROM();
+  Serial.println("Controlador steper v1.001");
 
   machinePostEvent({EV_INIT, 0, 0});
 }
@@ -32,4 +36,7 @@ void loop()
 
   /* ===== UI ===== */
   // displayUpdate();
+
+  /* ===== save data ===== */
+  eepromTask();
 }
