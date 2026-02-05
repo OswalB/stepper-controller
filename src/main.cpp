@@ -6,9 +6,14 @@
 #include "serial_if.h"
 #include "stepper_ctrl.h"
 
+constexpr uint8_t DIAG_PIN = 8;
+
 void setup()
 {
   pinMode(13, OUTPUT);
+
+  pinMode(DIAG_PIN, INPUT_PULLUP);
+  bool diagnosticMode = (digitalRead(DIAG_PIN) == LOW);
 
   machineInit();
   stepperInit();

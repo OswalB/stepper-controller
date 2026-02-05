@@ -11,7 +11,8 @@
       "top": -245.99,
       "left": 10.03,
       "attrs": { "size": "17" }
-    }
+    },
+    { "type": "wokwi-slide-switch", "id": "sw1", "top": -14.8, "left": 271.9, "attrs": {} }
   ],
   "connections": [
     [ "drv1:2A", "stepper1:A-", "green", [ "h0" ] ],
@@ -21,7 +22,9 @@
     [ "drv1:STEP", "mega:2", "green", [ "h-19.2", "v28.8", "h268.8" ] ],
     [ "drv1:DIR", "mega:3", "black", [ "h0", "v28.8", "h230.4" ] ],
     [ "drv1:SLEEP", "drv1:RESET", "blue", [ "h-19.2", "v-9.6" ] ],
-    [ "drv1:ENABLE", "mega:6", "green", [ "h-9.6", "v-19.2", "h192" ] ]
+    [ "drv1:ENABLE", "mega:6", "green", [ "h-9.6", "v-19.2", "h192" ] ],
+    [ "sw1:3", "mega:8", "purple", [ "v19.2", "h-124.6" ] ],
+    [ "sw1:2", "mega:GND.1", "purple", [ "v9.6", "h-163.1" ] ]
   ],
   "dependencies": {}
 }
