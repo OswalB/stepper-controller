@@ -1,5 +1,5 @@
 #include "machine_state.h"
-#include "stepper_ctrl.h"
+#include "motor_axis.h"
 
 /* ===== Forward declaration ===== */
 static void onEnter(MachineState s);
@@ -52,7 +52,7 @@ static void handleEvent(const MachineEvent &ev)
        currentState == MS_RUNNING ||
        currentState == MS_PAUSED))
   {
-    stepperSetSpeedPulse(ev.motorId, ev.value);
+    //stepperSetSpeedPulse(ev.motorId, ev.value);
   }
 
   switch (currentState)
@@ -108,7 +108,7 @@ static void onEnter(MachineState s)
   {
 
   case MS_RUNNING:
-    stepperStart();
+    //stepperStart();
     break;
 
   default:
@@ -122,7 +122,7 @@ static void onExit(MachineState s)
   {
 
   case MS_RUNNING:
-    stepperStop();
+    //stepperStop();
     break;
 
   default:
