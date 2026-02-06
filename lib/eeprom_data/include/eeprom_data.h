@@ -6,7 +6,7 @@
 #define NUM_MOTORS 3
 #define EEPROM_SAVE_DELAY_MS 3000
 
-static uint32_t lastChangeMs = 0;
+//static uint32_t lastChangeMs = 0;
 
 struct EEPROMHeader
 {

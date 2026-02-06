@@ -52,7 +52,7 @@ enum AxisId
   AXIS_COUNT
 };
 
-MotorAxis axes[AXIS_COUNT];
+//MotorAxis axes[AXIS_COUNT];
 
 void axisInit();
 void axisTick();

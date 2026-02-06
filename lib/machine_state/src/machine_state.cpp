@@ -8,7 +8,7 @@ static void onExit(MachineState s);
 /* ===== Estado actual ===== */
 static MachineState currentState = MS_IDLE;
 static MachineEvent pendingEvent;
-static bool eventPending = false;
+//static bool eventPending = false;
 
 /* ===== Internos ===== */
 static void handleEvent(const MachineEvent &ev);
