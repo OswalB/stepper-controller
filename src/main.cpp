@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 
+#include "system_mode.h"
+#include "diagnostic_mode.h"
 #include "eeprom_data.h"
 #include "machine_state.h"
 #include "serial_if.h"
@@ -9,20 +11,29 @@
 
 constexpr uint8_t DIAG_PIN = 8;
 
+
+
 void setup()
 {
   pinMode(13, OUTPUT);
 
   pinMode(DIAG_PIN, INPUT_PULLUP);
-  bool diagnosticMode = (digitalRead(DIAG_PIN) == LOW);
+  g_diagnosticMode  = (digitalRead(DIAG_PIN) == LOW);
 
-  machineInit();
+  
   axisInit();
   serialInit();
   loadEEPROM();
   Serial.println("Controlador steper v1.002");
-
-  machinePostEvent({EV_INIT, 0, 0});
+  if (g_diagnosticMode) {
+    Serial.println("=== MODO DIAGNOSTICO* ===");
+    diagnosticInit();
+  } else {
+    Serial.println("=== MODO NORMAL ===");
+    machineInit();
+    machinePostEvent({EV_INIT, 0, 0});
+  }
+  
 }
 
 void loop()
@@ -33,7 +44,13 @@ void loop()
   // menuUpdate();
 
   /* ===== CORE ===== */
-  machineUpdate(); // 👈 AQUÍ se actualiza la FSM
+  if (g_diagnosticMode) {
+    diagnosticUpdate();
+  } else{
+    machineUpdate(); // 👈 AQUÍ se actualiza la FSM
+  }
+
+
 
   /* ===== ACTUADORES ===== */
   // stepperUpdate();

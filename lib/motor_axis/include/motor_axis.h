@@ -1,6 +1,8 @@
 #pragma once
 #include <AccelStepper.h>
 
+
+
 enum AxisMode
 {
   AXIS_IDLE,
@@ -43,13 +45,15 @@ private:
   AxisMode _mode;
 };
 
+
+#define AXIS_COUNT 3
+extern MotorAxis axes[AXIS_COUNT];
 // pendiente revision
 enum AxisId
 {
   X,
   Y,
   Z,
-  AXIS_COUNT
 };
 
 //MotorAxis axes[AXIS_COUNT];
