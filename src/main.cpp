@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 
+
+#include "led_pwm.h"
 #include "system_mode.h"
 #include "diagnostic_mode.h"
 #include "eeprom_data.h"
@@ -10,13 +12,15 @@
 //#include "stepper_ctrl.h"
 
 constexpr uint8_t DIAG_PIN = 8;
-
+LedPWM ledError(13);
 
 
 void setup()
 {
-  pinMode(13, OUTPUT);
-
+  //pinMode(13, OUTPUT);
+  
+  ledError.begin();
+  ledError.set(2.0, 25.0);
   pinMode(DIAG_PIN, INPUT_PULLUP);
   g_diagnosticMode  = (digitalRead(DIAG_PIN) == LOW);
 
@@ -24,7 +28,7 @@ void setup()
   axisInit();
   serialInit();
   loadEEPROM();
-  Serial.println("Controlador steper v1.002");
+  Serial.println("Controlador steper v1.003");
   if (g_diagnosticMode) {
     Serial.println("=== MODO DIAGNOSTICO* ===");
     diagnosticInit();
@@ -38,6 +42,7 @@ void setup()
 
 void loop()
 {
+  ledError.update();
   /* ===== INPUTS ===== */
   serialUpdate();
   // encoderUpdate();

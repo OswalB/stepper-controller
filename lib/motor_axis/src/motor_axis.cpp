@@ -33,6 +33,7 @@ void MotorAxis::enable()
   _mode = AXIS_IDLE;
 }
 
+
 void MotorAxis::disable()
 {
   digitalWrite(_enPin, HIGH);

@@ -11,7 +11,7 @@ enum DiagState {
 };
 
 static DiagState state;
-static unsigned long t0;
+//static unsigned long t0;
 
 void diagnosticInit()
 {
