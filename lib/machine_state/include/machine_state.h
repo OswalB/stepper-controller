@@ -1,45 +1,64 @@
 #pragma once
 #include <stdint.h>
 
-/* ===== Estados del proceso ===== */
+#include "event.h"
+
+/* ============================================================
+ * Modos de operación del motor
+ * ============================================================ */
 typedef enum
 {
-  MS_IDLE = 0,
-  MS_READY,
-  MS_RUNNING,
-  MS_PAUSED,
-  MS_STOPPED,
-  MS_ERROR
-} MachineState;
+  MM_RUN,
+  MM_STEPS,
+  MM_TIMER
+} MotorMode;
 
-/* ===== Eventos ===== */
+/* ============================================================
+ * Estados FSM del motor (uno por motor)
+ * ============================================================ */
 typedef enum
 {
-  EV_NONE = 0,
-  EV_INIT,
-  EV_START,
-  EV_STOP,
-  EV_PAUSE,
-  EV_RESUME,
-  EV_TICK,
-  EV_TIMEOUT,
-  EV_ERROR,
-  EV_SET_SPEED
-} MachineEventType;
+  M_IDLE,
+  M_READY,
+  M_RUNNING,
+  M_PAUSED,
+  M_STOPPING,
+  M_ERROR
+} MotorState;
 
-/* ===== Evento de la máquina ===== */
-struct MachineEvent
+/* ============================================================
+ * Contexto de ejecución de un motor
+ * (propiedad exclusiva de machine_state)
+ * ============================================================ */
+typedef struct
 {
-  MachineEventType type;
-  uint8_t motorId;
-  long value;
-};
+  // Estado FSM
+  MotorState state;
 
-/* ===== API pública ===== */
+  // Configuración
+  MotorMode mode;
+  int32_t   vmax;
+  int32_t   acc;
+  int32_t   speed;
+  int8_t    dir;
+
+  // Objetivos
+  int32_t   target_pulses;
+  uint32_t  target_time;
+
+  // Ejecución
+  int32_t   remaining_pulses;
+  uint32_t  remaining_time;
+
+  // Flags
+  bool      enabled;
+  bool      fault;
+
+} MotorContext;
+
+/* ============================================================
+ * API pública de la máquina
+ * ============================================================ */
 void machineInit(void);
 void machinePostEvent(MachineEvent ev);
 void machineUpdate(void);
-
-/* ===== Observabilidad ===== */
-MachineState machineGetState(void);
-const char *machineStateToStr(MachineState s);

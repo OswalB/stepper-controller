@@ -1,15 +1,21 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 
-
+#include "event_queue.h"
+#include "motor_context.h"
 #include "led_pwm.h"
 #include "system_mode.h"
+#include "system.h"
 #include "diagnostic_mode.h"
 #include "eeprom_data.h"
 #include "machine_state.h"
 #include "serial_if.h"
 #include "motor_axis.h"
 //#include "stepper_ctrl.h"
+
+EventQueue eventQueue;
+MotorContext motors[NUM_MOTORS];
+
 
 constexpr uint8_t DIAG_PIN = 8;
 LedPWM ledError(13);
@@ -19,6 +25,7 @@ void setup()
 {
   //pinMode(13, OUTPUT);
   
+  //MachineState::process();
   ledError.begin();
   ledError.set(2.0, 25.0);
   pinMode(DIAG_PIN, INPUT_PULLUP);

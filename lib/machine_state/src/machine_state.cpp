@@ -1,154 +1,206 @@
 #include "machine_state.h"
 #include "motor_axis.h"
+#include "event.h"
+#include "motor_context.h"
+#include "event_queue.h"
 
-/* ===== Forward declaration ===== */
-static void onEnter(MachineState s);
-static void onExit(MachineState s);
 
-/* ===== Estado actual ===== */
-static MachineState currentState = MS_IDLE;
-static MachineEvent pendingEvent;
-//static bool eventPending = false;
+#include "machine_state.h"
+#include "event.h"
+#include "motor_axis.h"   // interfaz del motor (no su contexto interno)
 
-/* ===== Internos ===== */
-static void handleEvent(const MachineEvent &ev);
+// --------------------------------------------------
+// Configuración
+// --------------------------------------------------
+#define MAX_MOTORS  4
+#define EVENT_QUEUE_SIZE 16
 
-/* ===== API ===== */
+// --------------------------------------------------
+// Cola simple de eventos (FIFO)
+// --------------------------------------------------
+static MachineEvent eventQueue[EVENT_QUEUE_SIZE];
+static uint8_t qHead = 0;
+static uint8_t qTail = 0;
+static uint8_t qCount = 0;
 
+// --------------------------------------------------
+// Prototipos internos
+// --------------------------------------------------
+static void dispatchEvent(const MachineEvent &ev);
+static void handleMotorEvent(const MachineEvent &ev);
+
+// --------------------------------------------------
+// Inicialización
+// --------------------------------------------------
 void machineInit(void)
 {
-  currentState = MS_IDLE;
+  qHead = qTail = qCount = 0;
+
+  for (uint8_t i = 0; i < MAX_MOTORS; i++)
+  {
+    motorInit(i);
+  }
 }
 
+// --------------------------------------------------
+// Publicar evento (desde serial, panel, main, etc.)
+// --------------------------------------------------
 void machinePostEvent(MachineEvent ev)
 {
-  pendingEvent = ev; // MVP: 1 evento a la vez
+  if (qCount >= EVENT_QUEUE_SIZE)
+  {
+    // cola llena → evento descartado
+    return;
+  }
+
+  eventQueue[qTail] = ev;
+  qTail = (qTail + 1) % EVENT_QUEUE_SIZE;
+  qCount++;
 }
 
+// --------------------------------------------------
+// Tick principal (llamado desde loop())
+// --------------------------------------------------
 void machineUpdate(void)
 {
-  if (pendingEvent.type != EV_NONE)
+  // 1. Despachar eventos pendientes (uno por ciclo)
+  if (qCount > 0)
   {
-    handleEvent(pendingEvent);
-    pendingEvent.type = EV_NONE;
+    MachineEvent ev = eventQueue[qHead];
+    qHead = (qHead + 1) % EVENT_QUEUE_SIZE;
+    qCount--;
+
+    dispatchEvent(ev);
+  }
+
+  // 2. Actualizar motores (run no bloqueante)
+  for (uint8_t i = 0; i < MAX_MOTORS; i++)
+  {
+    motorUpdate(i);
   }
 }
 
-MachineState machineGetState(void)
+// --------------------------------------------------
+// Dispatcher de eventos
+// --------------------------------------------------
+static void dispatchEvent(const MachineEvent &ev)
 {
-  return currentState;
-}
-
-/* ===== FSM ===== */
-
-static void handleEvent(const MachineEvent &ev)
-{
-
-  MachineState prevState = currentState;
-
-  if (
-      ev.type == EV_SET_SPEED &&
-      (currentState == MS_READY ||
-       currentState == MS_RUNNING ||
-       currentState == MS_PAUSED))
+  switch (ev.type)
   {
-    //stepperSetSpeedPulse(ev.motorId, ev.value);
-  }
+    case ME_EMERGENCY_STOP:
+      for (uint8_t i = 0; i < MAX_MOTORS; i++)
+      {
+        motorEmergencyStop(i);
+      }
+      break;
 
-  switch (currentState)
-  {
-
-  case MS_IDLE:
-    if (ev.type == EV_INIT)
-      currentState = MS_READY;
-    break;
-
-  case MS_READY:
-    if (ev.type == EV_START)
-      currentState = MS_RUNNING;
-    break;
-
-  case MS_RUNNING:
-    if (ev.type == EV_PAUSE)
-      currentState = MS_PAUSED;
-    else if (ev.type == EV_STOP)
-      currentState = MS_STOPPED;
-    else if (ev.type == EV_ERROR)
-      currentState = MS_ERROR;
-    break;
-
-  case MS_PAUSED:
-    if (ev.type == EV_RESUME)
-      currentState = MS_RUNNING;
-    else if (ev.type == EV_STOP)
-      currentState = MS_STOPPED;
-    break;
-
-  case MS_STOPPED:
-    if (ev.type == EV_START)
-      currentState = MS_RUNNING;
-    break;
-
-  case MS_ERROR:
-    if (ev.type == EV_STOP)
-      currentState = MS_IDLE;
-    break;
-  }
-
-  if (currentState != prevState)
-  {
-    onExit(prevState);
-    onEnter(currentState);
+    default:
+      handleMotorEvent(ev);
+      break;
   }
 }
 
-static void onEnter(MachineState s)
+// --------------------------------------------------
+// FSM / Control por motor
+// --------------------------------------------------
+static void handleMotorEvent(const MachineEvent &ev)
 {
-  switch (s)
+  uint8_t id = ev.motor_id;
+
+  if (id >= MAX_MOTORS)
+    return;
+
+  switch (ev.type)
   {
+    // ---------- CONTROL ----------
+    case ME_MOTOR_START:
+      motorStart(id);
+      break;
 
-  case MS_RUNNING:
-    //stepperStart();
-    break;
+    case ME_MOTOR_STOP:
+      motorStop(id);
+      break;
 
-  default:
-    break;
-  }
-}
+    case ME_MOTOR_STOP_SMOOTH:
+      motorStopSmooth(id);
+      break;
 
-static void onExit(MachineState s)
-{
-  switch (s)
-  {
+    case ME_MOTOR_PAUSE:
+      motorPause(id);
+      break;
 
-  case MS_RUNNING:
-    //stepperStop();
-    break;
+    case ME_MOTOR_RESUME:
+      motorResume(id);
+      break;
 
-  default:
-    break;
-  }
-}
+    case ME_MOTOR_RESET:
+      motorReset(id);
+      break;
 
-/* ===== Debug ===== */
+    // ---------- CONFIG ----------
+    case ME_MOTOR_SET_MODE:
+      motorSetMode(id, (MotorMode)ev.value);
+      break;
 
-const char *machineStateToStr(MachineState s)
-{
-  switch (s)
-  {
-  case MS_IDLE:
-    return "IDLE";
-  case MS_READY:
-    return "READY";
-  case MS_RUNNING:
-    return "RUNNING";
-  case MS_PAUSED:
-    return "PAUSED";
-  case MS_STOPPED:
-    return "STOPPED";
-  case MS_ERROR:
-    return "ERROR";
-  default:
-    return "?";
+    case ME_MOTOR_SET_VMAX:
+      motorSetVmax(id, ev.value);
+      break;
+
+    case ME_MOTOR_SET_ACC:
+      motorSetAcc(id, ev.value);
+      break;
+
+    case ME_MOTOR_SET_SPEED:
+      motorSetSpeed(id, ev.value);
+      break;
+
+    case ME_MOTOR_SET_DIR:
+      motorSetDir(id, (int8_t)ev.value);
+      break;
+
+    case ME_MOTOR_SET_TARGET_PULSES:
+      motorSetTargetPulses(id, ev.value);
+      break;
+
+    case ME_MOTOR_SET_TARGET_TIME:
+      motorSetTargetTime(id, ev.value);
+      break;
+
+    // ---------- ADJUST ----------
+    case ME_MOTOR_ADD_PULSES:
+      motorAddPulses(id, ev.value);
+      break;
+
+    case ME_MOTOR_DEC_PULSES:
+      motorAddPulses(id, -ev.value);
+      break;
+
+    case ME_MOTOR_ADD_TIME:
+      motorAddTime(id, ev.value);
+      break;
+
+    case ME_MOTOR_DEC_TIME:
+      motorAddTime(id, -ev.value);
+      break;
+
+    case ME_MOTOR_ADD_SPEED:
+      motorAddSpeed(id, ev.value);
+      break;
+
+    case ME_MOTOR_DEC_SPEED:
+      motorAddSpeed(id, -ev.value);
+      break;
+
+    // ---------- SYSTEM ----------
+    case ME_MOTOR_DONE:
+      motorOnDone(id);
+      break;
+
+    case ME_MOTOR_FAULT:
+      motorOnFault(id);
+      break;
+
+    default:
+      break;
   }
 }
