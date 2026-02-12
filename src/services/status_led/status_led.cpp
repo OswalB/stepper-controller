@@ -6,40 +6,40 @@ static LedPWM ledRun(A1);
 
 void status_leds_init(void) {
     ledError.init();
-    status_led_err_set(STATUS_LED_OFF);
+    status_led_err_set(ERR_LED_OFF);
     ledRun.init();
-    status_led_run_set(STATUS_LED_OFF);
+    status_led_run_set(RUN_LED_OFF);
 }
 
-void status_led_err_set(StatusLedState state) {
+void status_led_err_set(StatusLedErrState state) {
 
     switch (state) {
-        case STATUS_LED_OFF:
+        case ERR_LED_OFF:
             ledError.set(0, 0);
             break;
 
-        case STATUS_LED_WARNING:
+        case ERR_LED_WARNING:
             ledError.set(0.5f, 0.6f);
             break;
 
-        case STATUS_LED_ERROR:
+        case ERR_LED_ERROR:
             ledError.set(6.0f, 0.2f);
             break;
     }
 }
 
-void status_led_run_set(StatusLedState state) {
+void status_led_run_set(StatusLedRunState state) {
 
     switch (state) {
-        case STATUS_LED_OFF:
+        case RUN_LED_OFF:
             ledRun.set(0, 0);
             break;
 
-        case STATUS_LED_IDLE:
+        case RUN_LED_IDLE:
             ledRun.set(1.0f, 0.1f);
             break;
 
-        case STATUS_LED_RUNNING:
+        case RUN_LED_RUNNING:
             ledRun.set(1.0f, 0.5f);
             break;
 
