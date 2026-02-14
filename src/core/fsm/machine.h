@@ -1,6 +1,6 @@
 #pragma once
 
-typedef enum
+/*typedef enum
 {
     EVENT_OK,
     EVENT_INVALID_STATE,
@@ -8,7 +8,7 @@ typedef enum
     EVENT_BUSY,
     EVENT_UNKNOWN_ERROR
 
-} EventResult;
+} EventResult;*/
 
 void machine_init(void);
 void machine_update(void);

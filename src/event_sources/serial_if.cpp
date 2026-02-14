@@ -41,8 +41,10 @@ void serial_update(void)
         if (rxIndex > 0)
         {
           rxBuffer[rxIndex] = '\0'; // Termina string
+          serial_writeln("\r");
           parser_parse(rxBuffer);   // Llama parser
           rxIndex = 0;              // Reset buffer
+          
         }
       }
       else

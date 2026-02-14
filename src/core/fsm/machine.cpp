@@ -21,7 +21,7 @@ void machine_init(void)
 
 // Handler
 
- EventResult machine_handleEvent(Event evt)
+ /*EventResult*/void machine_handleEvent(Event evt)
 {
     if (evt.type == EVT_ERROR)
     {
