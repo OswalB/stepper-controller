@@ -15,11 +15,13 @@ static MachineState g_state;
 void machine_init(void)
 {
     g_state = MS_IDLE;
-    //ledService_setMode(LED_IDLE);
+    // ledService_setMode(LED_IDLE);
     status_led_run_set(RUN_LED_IDLE);
 }
 
-static void machine_handleEvent(Event evt)
+// Handler
+
+ EventResult machine_handleEvent(Event evt)
 {
     if (evt.type == EVT_ERROR)
     {
@@ -27,47 +29,47 @@ static void machine_handleEvent(Event evt)
         status_led_err_set(ERR_LED_ERROR);
         return;
     }
-    
+
     switch (g_state)
     {
-        case MS_IDLE:
+    case MS_IDLE:
 
-            if (evt.type == EVT_START)
-            {
-                g_state = MS_RUNNING;
-                //ledService_setMode(LED_RUN);
-                status_led_run_set(RUN_LED_RUNNING);
-            }
+        if (evt.type == EVT_START)
+        {
+            g_state = MS_RUNNING;
+            // ledService_setMode(LED_RUN);
+            status_led_run_set(RUN_LED_RUNNING);
+        }
 
-            break;
+        break;
 
-        case MS_RUNNING:
+    case MS_RUNNING:
 
-            if (evt.type == EVT_STOP)
-            {
-                g_state = MS_IDLE;
-                //ledService_setMode(LED_IDLE);
-                status_led_run_set(RUN_LED_IDLE);
-            }
-            else if (evt.type == EVT_ERROR)
-            {
-                g_state = MS_ERROR;
-                //ledService_setMode(LED_ERROR);
-                status_led_err_set(ERR_LED_ERROR);
-            }
+        if (evt.type == EVT_STOP)
+        {
+            g_state = MS_IDLE;
+            // ledService_setMode(LED_IDLE);
+            status_led_run_set(RUN_LED_IDLE);
+        }
+        else if (evt.type == EVT_ERROR)
+        {
+            g_state = MS_ERROR;
+            // ledService_setMode(LED_ERROR);
+            status_led_err_set(ERR_LED_ERROR);
+        }
 
-            break;
+        break;
 
-        case MS_ERROR:
+    case MS_ERROR:
 
-            if (evt.type == EVT_RESET)
-            {
-                g_state = MS_IDLE;
-                //ledService_setMode(LED_IDLE);
-                status_led_run_set(RUN_LED_IDLE);
-            }
+        if (evt.type == EVT_RESET)
+        {
+            g_state = MS_IDLE;
+            // ledService_setMode(LED_IDLE);
+            status_led_run_set(RUN_LED_IDLE);
+        }
 
-            break;
+        break;
     }
 }
 
@@ -80,3 +82,5 @@ void machine_update(void)
         machine_handleEvent(evt);
     }
 }
+
+

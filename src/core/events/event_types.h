@@ -1,12 +1,14 @@
 #pragma once
-
+#include <stdint.h>
 typedef enum
 {
     EVT_NONE = 0,
     EVT_START,
     EVT_STOP,
     EVT_ERROR,
-    EVT_RESET
+    EVT_RESET,
+    EVT_MODE_SET,
+    EVT_SET_SPEED
 } EventType;
 
 typedef struct

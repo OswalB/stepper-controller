@@ -36,11 +36,11 @@ void status_led_run_set(StatusLedRunState state) {
             break;
 
         case RUN_LED_IDLE:
-            ledRun.set(1.0f, 0.1f);
+            ledRun.set(2.0f, 0.1f);
             break;
 
         case RUN_LED_RUNNING:
-            ledRun.set(1.0f, 0.5f);
+            ledRun.set(4.0f, 1.0f);
             break;
 
     }
