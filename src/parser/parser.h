@@ -1,3 +1,3 @@
 #pragma once
 
-void parser_parse(char* line);
+void parser_parse(char *line);

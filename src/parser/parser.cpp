@@ -9,11 +9,11 @@
 // --------------------------------------------
 // Tokenizador simple
 // --------------------------------------------
-static int tokenize(char* line, char* tokens[])
+static int tokenize(char *line, char *tokens[])
 {
     int count = 0;
 
-    char* token = strtok(line, " ");
+    char *token = strtok(line, " ");
 
     while (token != NULL && count < MAX_TOKENS)
     {
@@ -27,9 +27,9 @@ static int tokenize(char* line, char* tokens[])
 // --------------------------------------------
 // Parser principal
 // --------------------------------------------
-void parser_parse(char* line)
+void parser_parse(char *line)
 {
-    char* tokens[MAX_TOKENS];
+    char *tokens[MAX_TOKENS];
     int count = tokenize(line, tokens);
 
     if (count == 0)
@@ -44,5 +44,12 @@ void parser_parse(char* line)
         }
     }
 
-    printf("Unknown command\n");
+    for (int i = 0; i < commandCount; i++)
+    {
+        if (strcmp("unknow", commandTable[i].name) == 0)
+        {
+            commandTable[i].handler(tokens, count);
+            return;
+        }
+    }
 }

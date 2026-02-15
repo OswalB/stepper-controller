@@ -15,13 +15,12 @@ static MachineState g_state;
 void machine_init(void)
 {
     g_state = MS_IDLE;
-    // ledService_setMode(LED_IDLE);
     status_led_run_set(RUN_LED_IDLE);
 }
 
 // Handler
 
- /*EventResult*/void machine_handleEvent(Event evt)
+/*EventResult*/ void machine_handleEvent(Event evt)
 {
     if (evt.type == EVT_ERROR)
     {
@@ -37,7 +36,6 @@ void machine_init(void)
         if (evt.type == EVT_START)
         {
             g_state = MS_RUNNING;
-            // ledService_setMode(LED_RUN);
             status_led_run_set(RUN_LED_RUNNING);
         }
 
@@ -48,13 +46,11 @@ void machine_init(void)
         if (evt.type == EVT_STOP)
         {
             g_state = MS_IDLE;
-            // ledService_setMode(LED_IDLE);
             status_led_run_set(RUN_LED_IDLE);
         }
         else if (evt.type == EVT_ERROR)
         {
             g_state = MS_ERROR;
-            // ledService_setMode(LED_ERROR);
             status_led_err_set(ERR_LED_ERROR);
         }
 
@@ -65,7 +61,6 @@ void machine_init(void)
         if (evt.type == EVT_RESET)
         {
             g_state = MS_IDLE;
-            // ledService_setMode(LED_IDLE);
             status_led_run_set(RUN_LED_IDLE);
         }
 
@@ -82,5 +77,3 @@ void machine_update(void)
         machine_handleEvent(evt);
     }
 }
-
-

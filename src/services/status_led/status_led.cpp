@@ -4,49 +4,54 @@
 static LedPWM ledError(A0);
 static LedPWM ledRun(A1);
 
-void status_leds_init(void) {
+void status_leds_init(void)
+{
     ledError.init();
     status_led_err_set(ERR_LED_OFF);
     ledRun.init();
     status_led_run_set(RUN_LED_OFF);
 }
 
-void status_led_err_set(StatusLedErrState state) {
+void status_led_err_set(StatusLedErrState state)
+{
 
-    switch (state) {
-        case ERR_LED_OFF:
-            ledError.set(0, 0);
-            break;
+    switch (state)
+    {
+    case ERR_LED_OFF:
+        ledError.set(0, 0);
+        break;
 
-        case ERR_LED_WARNING:
-            ledError.set(0.5f, 0.6f);
-            break;
+    case ERR_LED_WARNING:
+        ledError.set(1000, 50);
+        break;
 
-        case ERR_LED_ERROR:
-            ledError.set(6.0f, 0.2f);
-            break;
+    case ERR_LED_ERROR:
+        ledError.set(200, 25);
+        break;
     }
 }
 
-void status_led_run_set(StatusLedRunState state) {
+void status_led_run_set(StatusLedRunState state)
+{
 
-    switch (state) {
-        case RUN_LED_OFF:
-            ledRun.set(0, 0);
-            break;
+    switch (state)
+    {
+    case RUN_LED_OFF:
+        ledRun.set(0, 0);
+        break;
 
-        case RUN_LED_IDLE:
-            ledRun.set(2.0f, 0.1f);
-            break;
+    case RUN_LED_IDLE:
+        ledRun.set(3000, 10);
+        break;
 
-        case RUN_LED_RUNNING:
-            ledRun.set(4.0f, 1.0f);
-            break;
-
+    case RUN_LED_RUNNING:
+        ledRun.set(500, 50);
+        break;
     }
 }
 
-void status_leds_update(void) {
+void status_leds_update(void)
+{
     ledError.update();
     ledRun.update();
 }

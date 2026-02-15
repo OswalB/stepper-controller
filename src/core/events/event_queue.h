@@ -16,5 +16,5 @@ typedef struct
 
 void eventQueue_init(void);
 bool eventQueue_push(Event evt);
-bool eventQueue_pop(Event* evt);
+bool eventQueue_pop(Event *evt);
 bool eventQueue_isEmpty(void);

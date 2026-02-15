@@ -2,14 +2,12 @@
 #include "app_init.h"
 #include "app_run.h"
 
-
-void setup() {
+void setup()
+{
   app_init();
-  
 }
 
-
-void loop() {
+void loop()
+{
   app_run();
-
 }

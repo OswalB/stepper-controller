@@ -42,9 +42,8 @@ void serial_update(void)
         {
           rxBuffer[rxIndex] = '\0'; // Termina string
           serial_writeln("\r");
-          parser_parse(rxBuffer);   // Llama parser
-          rxIndex = 0;              // Reset buffer
-          
+          parser_parse(rxBuffer); // Llama parser
+          rxIndex = 0;            // Reset buffer
         }
       }
       else

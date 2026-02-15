@@ -1,18 +1,18 @@
 #pragma once
 
-typedef enum {
+typedef enum
+{
     ERR_LED_OFF,
     ERR_LED_WARNING,
     ERR_LED_ERROR
 } StatusLedErrState;
 
-typedef enum {
+typedef enum
+{
     RUN_LED_OFF,
     RUN_LED_IDLE,
     RUN_LED_RUNNING
 } StatusLedRunState;
-
-
 
 void status_leds_init(void);
 void status_led_err_set(StatusLedErrState state);

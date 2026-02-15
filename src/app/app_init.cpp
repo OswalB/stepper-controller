@@ -11,5 +11,4 @@ void app_init()
     machine_init();
 
     serial_writeln("=== SERIAL IF READY ===");
-    
 }

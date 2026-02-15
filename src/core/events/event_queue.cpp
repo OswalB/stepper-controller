@@ -28,7 +28,7 @@ bool eventQueue_push(Event evt)
     return true;
 }
 
-bool eventQueue_pop(Event* evt)
+bool eventQueue_pop(Event *evt)
 {
     if (g_queue.count == 0)
     {

@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <stdarg.h>
 
-void Transport_Send(const char* format, ...)
+void Transport_Send(const char *format, ...)
 {
     char buffer[128];
 
@@ -10,5 +10,5 @@ void Transport_Send(const char* format, ...)
     vsnprintf(buffer, sizeof(buffer), format, args);
     va_end(args);
 
-    Serial.print(buffer);
+    Serial.println(buffer);
 }

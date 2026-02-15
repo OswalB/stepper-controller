@@ -1,4 +1,3 @@
-// led_pwm.cpp
 #include "led_pwm.h"
 
 LedPWM::LedPWM(uint8_t pin) : _pin(pin) {}
@@ -9,31 +8,39 @@ void LedPWM::init()
   digitalWrite(_pin, LOW);
 }
 
-void LedPWM::set(float frequency, float duty)
+void LedPWM::set(uint32_t periodMs, uint8_t dutyPercent)
 {
-  if (frequency <= 0 || duty <= 0)
+  // OFF total
+  if (periodMs == 0 || dutyPercent == 0)
   {
-    _freq = 0;
+    _periodMs = 0;
+    _duty = 0;
     digitalWrite(_pin, LOW);
     return;
   }
 
-  if (duty > 100) duty = 100;
+  if (dutyPercent >= 100)
+  {
+    _periodMs = 0;
+    _duty = 100;
+    digitalWrite(_pin, HIGH);
+    return;
+  }
 
-  _freq = frequency;
-  _duty = duty;
+  _periodMs = periodMs;
+  _duty = dutyPercent;
 
-  _periodMs = (unsigned long)(1000.0 / _freq);
-  _onTimeMs = (unsigned long)(_periodMs * (_duty / 100.0));
+  _onTimeMs = (_periodMs * _duty) / 100UL;
 }
 
 void LedPWM::update()
 {
-  if (_freq == 0) return;
+  if (_periodMs == 0 || _duty == 0 || _duty >= 100)
+    return;
 
-  unsigned long now = millis();
+  uint32_t now = millis();
 
-  unsigned long interval = _state ? _onTimeMs : (_periodMs - _onTimeMs);
+  uint32_t interval = _state ? _onTimeMs : (_periodMs - _onTimeMs);
 
   if (now - _lastToggle >= interval)
   {

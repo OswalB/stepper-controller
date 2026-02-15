@@ -8,18 +8,21 @@ public:
   LedPWM(uint8_t pin);
 
   void init();
-  void set(float frequency, float duty);
+
+  // periodMs = duración total del ciclo
+  // dutyPercent = 0–100
+  void set(uint32_t periodMs, uint8_t dutyPercent);
+
   void update();
 
 private:
   uint8_t _pin;
 
-  float _freq = 0;
-  float _duty = 0;
+  uint32_t _periodMs = 0;
+  uint32_t _onTimeMs = 0;
 
-  unsigned long _periodMs = 0;
-  unsigned long _onTimeMs = 0;
+  uint32_t _lastToggle = 0;
 
-  unsigned long _lastToggle = 0;
-  bool _state = LOW;
+  uint8_t _duty = 0;
+  bool _state = false;
 };
