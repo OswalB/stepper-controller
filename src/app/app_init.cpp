@@ -1,7 +1,7 @@
 #include "services/status_led/status_led.h"
 #include "core/events/event_queue.h"
 #include "core/fsm/machine.h"
-#include "event_sources/serial_if.h"
+#include "event_sources/serial_if/serial_if.h"
 
 void app_init()
 {
