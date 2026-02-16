@@ -43,7 +43,7 @@ void parser_parse(char *line)
             return;
         }
     }
-
+    //No se encontró un comando en la tabla
     for (int i = 0; i < commandCount; i++)
     {
         if (strcmp("unknow", commandTable[i].name) == 0)
