@@ -4,10 +4,42 @@
 #include "./core/transport/transport.h"
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
-// ----------------------------
-// Helpers
-// ----------------------------
+
+
+
+/*bool parser_isValidDomain(const char *domain)
+{
+    if (strcmp(domain, "MOTOR") == 0) return true;
+    if (strcmp(domain, "FAN") == 0) return true;
+    if (strcmp(domain, "LED") == 0) return true;
+
+    return false;
+}
+
+
+
+
+
+
+bool parser_isValidId(const char *token, uint8_t maxId)
+{
+    for (int i = 0; token[i] != '\0'; i++)
+    {
+        if (!isdigit(token[i]))
+            return false;
+    }
+
+    int id = atoi(token);
+
+    if (id < 0 || id >= maxId)
+        return false;
+
+    return true;
+}*/
+
+
 /*static bool isFloat(const char *str)
 {
     while (*str)
@@ -49,10 +81,7 @@ uint8_t GetCommandId(char **tokens, int count)
 // UNKNOW
 // ----------------------------
 
-void cmd_unknow(char *tokens[], int count)
-{
-    Transport_Send(">Unknow %s %u\r", tokens[0], 0);
-}
+
 
 // ----------------------------
 // START
