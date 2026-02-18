@@ -14,7 +14,10 @@ typedef enum
     PARSE_OK = 0,
     PARSE_ERR_TOO_FEW_ARGS,
     PARSE_ERR_INVALID_ID,
-    PARSE_ERR_INVALID_FORMAT
+    PARSE_ERR_INVALID_FORMAT,
+    PARSE_ERR_INVALID_CMD,
+    PARSE_ERR_INVALID_DOM,
+    PARSE_ERR_ID_UNKNOW
 } ParseResult;
 
 typedef struct // para construir la tabla de despacho basada en string

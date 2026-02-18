@@ -9,14 +9,7 @@
 
 
 
-/*bool parser_isValidDomain(const char *domain)
-{
-    if (strcmp(domain, "MOTOR") == 0) return true;
-    if (strcmp(domain, "FAN") == 0) return true;
-    if (strcmp(domain, "LED") == 0) return true;
-
-    return false;
-}
+/*
 
 
 
