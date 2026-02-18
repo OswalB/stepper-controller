@@ -12,17 +12,33 @@
 
 bool parser_isValidDomain(const char *domain)
 {
-    if (strcmp(domain, "MOTOR") == 0) return true;
-    if (strcmp(domain, "FAN") == 0) return true;
-    if (strcmp(domain, "LED") == 0) return true;
+    if (strcmp(domain, "MOTOR") == 0)
+        return true;
+    if (strcmp(domain, "FAN") == 0)
+        return true;
+    if (strcmp(domain, "LED") == 0)
+        return true;
+
+    return false;
+}
+
+bool parser_isValidParam(const char *param)
+{
+    if (strcmp(param, "SPEED") == 0)
+        return true;
+    if (strcmp(param, "ACCEL") == 0)
+        return true;
+    if (strcmp(param, "MODE") == 0)
+        return true;
 
     return false;
 }
 
 ParseResult parser_validateStructure(CommandType type, int count, char *tokens[])
 {
-    if (count < 2 || !parser_isValidDomain(tokens[1])) return PARSE_ERR_INVALID_DOM;
-    
+    if (count < 2 || !parser_isValidDomain(tokens[1]))
+        return PARSE_ERR_INVALID_DOM;
+
     switch (type)
     {
     case CMD_TYPE_ACTION:
@@ -39,6 +55,8 @@ ParseResult parser_validateStructure(CommandType type, int count, char *tokens[]
 
     case CMD_TYPE_SET:
         // SET MOTOR 2 SPEED 2300
+        if (!parser_isValidParam(tokens[3]))
+            return PARSE_ERR_INVALID_PARAM;
         if (count != 5)
             return PARSE_ERR_TOO_FEW_ARGS;
         break;
@@ -70,17 +88,21 @@ void parser_sendError(ParseResult err)
     case PARSE_ERR_INVALID_CMD:
         Transport_Send("ERR CMMAND UNKNOW");
         break;
-    
+
     case PARSE_ERR_INVALID_DOM:
         Transport_Send("ERR DOMAIN UNKNOW");
-        break;    
+        break;
 
     case PARSE_ERR_ID_UNKNOW:
         Transport_Send("ERR ID UNKNOW");
-        break;      
+        break;
+
+    case PARSE_ERR_INVALID_PARAM:
+        Transport_Send("ERR PARAM UNKNOW");
+        break;
 
     default:
-        Transport_Send("ERR");
+        Transport_Send("ERR UNDEF");
         break;
     }
 }

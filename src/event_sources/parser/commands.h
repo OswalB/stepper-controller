@@ -2,6 +2,8 @@
 
 /*
 <CMD> <DOMINIO> <ID> <PARAMETRO> <VALOR>
+
+
 */
 
 //API publica
