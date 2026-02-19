@@ -3,8 +3,37 @@
 #include "./core/transport/transport.h"
 #include <string.h>
 #include <stdio.h>
+#include "../lib/utils/utils.h"
 
 #define MAX_TOKENS 5
+
+typedef enum
+{
+    PARSE_OK = 0,
+    PARSE_ERR_INVALID_CMD,
+    PARSE_ERR_INVALID_DOM,
+    PARSE_ERR_ID_UNKNOW,
+    PARSE_ERR_MANY_ARGS,
+    PARSE_ERR_TOO_FEW_ARGS,
+    PARSE_ERR_INVALID_PARAM,
+    PARSE_ERR_INVALID_ID,
+    PARSE_ERR_INVALID_FORMAT,
+    PARSE_ERR_COUNT
+} ParseResult;
+
+//debe coincidir:
+static const char *parse_error_str[PARSE_ERR_COUNT] =
+{
+    "OK",
+    "ERR COMMAND UNKNOWN",
+    "ERR DOMAIN UNKNOWN",
+    "ERR ID UNKNOWN",
+    "ERR MANY ARGS",
+    "ERR VALUEset",
+    "ERR PARAM UNKNOWN",
+    "ERR ID",
+    "ERR FORMAT"
+};
 
 // ----------------------------
 // Helpers
@@ -43,14 +72,11 @@ ParseResult parser_validateStructure(CommandType type, int count, char *tokens[]
     {
     case CMD_TYPE_ACTION:
         // START MOTOR 0
-        if (count != 3)
+        if (count < 3)
             return PARSE_ERR_ID_UNKNOW;
-        break;
 
-    case CMD_TYPE_STATUS:
-        // STATUS MOTOR 1
-        if (count != 3)
-            return PARSE_ERR_TOO_FEW_ARGS;
+        if (count > 3)
+            return PARSE_ERR_MANY_ARGS;
         break;
 
     case CMD_TYPE_SET:
@@ -70,40 +96,14 @@ ParseResult parser_validateStructure(CommandType type, int count, char *tokens[]
 
 void parser_sendError(ParseResult err)
 {
-    Transport_Send("[CMMAND][DOMAIN][ID][PARAM][VALUE]");
-    switch (err)
+    Transport_Send(">[CMMAND][DOMAIN][ID][PARAM][VALUE]");
+    if (err < PARSE_ERR_COUNT)
     {
-    case PARSE_ERR_TOO_FEW_ARGS:
-        Transport_Send("ERR ARG");
-        break;
-
-    case PARSE_ERR_INVALID_ID:
-        Transport_Send("ERR ID");
-        break;
-
-    case PARSE_ERR_INVALID_FORMAT:
-        Transport_Send("ERR FORMAT");
-        break;
-
-    case PARSE_ERR_INVALID_CMD:
-        Transport_Send("ERR CMMAND UNKNOW");
-        break;
-
-    case PARSE_ERR_INVALID_DOM:
-        Transport_Send("ERR DOMAIN UNKNOW");
-        break;
-
-    case PARSE_ERR_ID_UNKNOW:
-        Transport_Send("ERR ID UNKNOW");
-        break;
-
-    case PARSE_ERR_INVALID_PARAM:
-        Transport_Send("ERR PARAM UNKNOW");
-        break;
-
-    default:
+        Transport_Send(">%s", parse_error_str[err]);
+    }
+    else
+    {
         Transport_Send("ERR UNDEF");
-        break;
     }
 }
 
@@ -135,6 +135,14 @@ void parser_parse(char *line)
 
     if (count == 0)
         return;
+
+    for (int i = 0; i < count; i++)
+    {
+        if (!utils_is_numeric(tokens[i]))
+        {
+            utils_to_uppercase(tokens[i]);
+        }
+    }
 
     for (int i = 0; i < commandCount; i++)
     {

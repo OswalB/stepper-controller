@@ -67,10 +67,10 @@ uint8_t GetCommandId(char **tokens, int count)
 
 void cmd_set(char *tokens[], int count)
 {
-    long value = strtol(tokens[4], NULL, 10);
     int id = strtol(tokens[2], NULL, 10);
-
-    Transport_Send("OK %s %s %02d %s %ld ",
+    long value = strtol(tokens[4], NULL, 10);
+    
+    Transport_Send(">OK %s %s %02d %s %ld ",
                    tokens[0], tokens[1], id, tokens[3], value);
 }
 
