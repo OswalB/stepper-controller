@@ -69,7 +69,14 @@ void cmd_set(char *tokens[], int count)
 {
     int id = strtol(tokens[2], NULL, 10);
     long value = strtol(tokens[4], NULL, 10);
-    
+
+    Event ev;
+    ev.type = EVT_ERROR;
+    ev.id = id;
+    ev.value = value;
+
+    eventQueue_push(ev);
+
     Transport_Send(">OK %s %s %02d %s %ld ",
                    tokens[0], tokens[1], id, tokens[3], value);
 }
