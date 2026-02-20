@@ -111,7 +111,6 @@ typedef struct
    API PUBLICA
    ============================================================ */
 
-
 void motor_init(MotorContext *m, MotorConfig config, MotorLimits limits);
 
 void motor_handleEvent(MotorContext *m, const Event *evt);
@@ -120,13 +119,12 @@ void motor_update(MotorContext *m);
 
 MotorState motor_getState(const MotorContext *m);
 
-bool motor_getStatus(const MotorContext* m,
-                     MotorState* state,
-                     MotorMode* mode,
-                     MotorDirection* direction,
-                     float* current_speed,
-                     float* target_speed,
-                     float* acceleration);
+bool motor_getStatus(const MotorContext *m,
+                     MotorState *state,
+                     MotorMode *mode,
+                     MotorDirection *direction,
+                     float *current_speed,
+                     float *target_speed,
+                     float *acceleration);
 
-void motor_printStatus(const MotorContext* m);
-
+void motor_printStatus(const MotorContext *m);

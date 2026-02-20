@@ -4,7 +4,7 @@
    INIT
    ============================================================ */
 
-void motorSystem_init(MotorSystem* sys,
+void motorSystem_init(MotorSystem *sys,
                       const MotorConfig configs[],
                       const MotorLimits limits[],
                       uint8_t motor_count)
@@ -27,7 +27,7 @@ void motorSystem_init(MotorSystem* sys,
    UPDATE (llamar en loop principal)
    ============================================================ */
 
-void motorSystem_update(MotorSystem* sys)
+void motorSystem_update(MotorSystem *sys)
 {
     if (sys == nullptr)
         return;
@@ -42,8 +42,8 @@ void motorSystem_update(MotorSystem* sys)
    EVENT DISPATCH
    ============================================================ */
 
-void motorSystem_handleEvent(MotorSystem* sys,
-                             const Event* evt)
+void motorSystem_handleEvent(MotorSystem *sys,
+                             const Event *evt)
 {
     if (sys == nullptr || evt == nullptr)
         return;
@@ -55,7 +55,7 @@ void motorSystem_handleEvent(MotorSystem* sys,
        2) Filtrar por ID (si tu Event lo soporta)
 
        Supongamos que Event tiene campo target_id
-    
+
 
     for (uint8_t i = 0; i < sys->count; i++)
     {
@@ -70,7 +70,7 @@ void motorSystem_handleEvent(MotorSystem* sys,
    GET MOTOR
    ============================================================ */
 
-MotorContext* motorSystem_getMotor(MotorSystem* sys, uint8_t id)
+MotorContext *motorSystem_getMotor(MotorSystem *sys, uint8_t id)
 {
     if (sys == nullptr)
         return nullptr;
@@ -87,6 +87,3 @@ MotorContext* motorSystem_getMotor(MotorSystem* sys, uint8_t id)
 /* ============================================================
    HELPERS
    ============================================================ */
-
-
-

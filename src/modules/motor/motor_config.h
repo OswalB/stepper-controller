@@ -3,4 +3,4 @@
 #include "motor_system.h"
 
 void motors_init();
-MotorSystem* motors_getSystem();
+MotorSystem *motors_getSystem();

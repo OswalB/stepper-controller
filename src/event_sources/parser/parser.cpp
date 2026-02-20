@@ -6,39 +6,14 @@
 #include "../lib/utils/utils.h"
 
 #define MAX_TOKENS 5
+/*
 
-typedef enum
-{
-    PARSE_OK = 0,
-    PARSE_ERR_INVALID_CMD,
-    PARSE_ERR_INVALID_DOM,
-    PARSE_ERR_ID_UNKNOW,
-    PARSE_ERR_MANY_ARGS,
-    PARSE_ERR_TOO_FEW_ARGS,
-    PARSE_ERR_INVALID_PARAM,
-    PARSE_ERR_INVALID_ID,
-    PARSE_ERR_INVALID_FORMAT,
-    PARSE_ERR_COUNT
-} ParseResult;
 
-//debe coincidir:
-static const char *parse_error_str[PARSE_ERR_COUNT] =
-{
-    "OK",
-    "ERR COMMAND UNKNOWN",
-    "ERR DOMAIN UNKNOWN",
-    "ERR ID UNKNOWN",
-    "ERR MANY ARGS",
-    "ERR VALUEset",
-    "ERR PARAM UNKNOWN",
-    "ERR ID",
-    "ERR FORMAT"
-};
-
+*/
 // ----------------------------
 // Helpers
 // ----------------------------
-
+/*
 bool parser_isValidDomain(const char *domain)
 {
     if (strcmp(domain, "MOTOR") == 0)
@@ -94,18 +69,8 @@ ParseResult parser_validateStructure(CommandType type, int count, char *tokens[]
     return PARSE_OK;
 }
 
-void parser_sendError(ParseResult err)
-{
-    Transport_Send(">[CMMAND][DOMAIN][ID][PARAM][VALUE]");
-    if (err < PARSE_ERR_COUNT)
-    {
-        Transport_Send(">%s", parse_error_str[err]);
-    }
-    else
-    {
-        Transport_Send("ERR UNDEF");
-    }
-}
+
+    */
 
 // --------------------------------------------
 // Tokenizador simple
@@ -159,5 +124,5 @@ void parser_parse(char *line)
             return;
         }
     }
-    parser_sendError(PARSE_ERR_INVALID_CMD);
+    Transport_Send(">ERR CMMAND UNKNOW");
 }

@@ -2,7 +2,6 @@
 #include "event_sources/serial_if/serial_if.h"
 #include "event_sources/parser/parser.h"
 
-
 #define SERIAL_BAUDRATE 115200
 #define RX_BUFFER_SIZE 128
 
