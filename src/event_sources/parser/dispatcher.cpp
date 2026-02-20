@@ -1,4 +1,4 @@
-#include "commands.h"
+#include "dispatcher.h"
 #include "core/events/event_types.h"
 #include "core/events/event_queue.h"
 #include "./core/transport/transport.h"
@@ -6,47 +6,86 @@
 #include <string.h>
 #include <ctype.h>
 
-/*
+// -------------------------------------------------
+// [SET] COMMAND 
+// -------------------------------------------------
+// PARAMS
 
-bool parser_isValidId(const char *token, uint8_t maxId)
-{
-    for (int i = 0; token[i] != '\0'; i++)
-    {
-        if (!isdigit(token[i]))
-            return false;
-    }
+static void motor_setSpeed(long id, long value);
+static void motor_setAccel(long id, long value);
+static void motor_set_speed(long id, long value);
 
-    int id = atoi(token);
+void motor_setSpeed(long id, long value){
 
-    if (id < 0 || id >= maxId)
-        return false;
-
-    return true;
-}*/
-
-/*static bool isFloat(const char *str)
-{
-    while (*str)
-    {
-        if (*str == '.')
-            return true;
-        str++;
-    }
-    return false;
 }
 
-static RunMode parseMode(const char *str)
+void motor_setAccel(long id, long value){
+
+}
+
+static const MotorSetEntry motor_set_table[] =
 {
-    if (strcmp(str, "jog") == 0)
-        return MODE_JOG;
-    if (strcmp(str, "pasos") == 0)
-        return MODE_PASOS;
-    if (strcmp(str, "timer") == 0)
-        return MODE_TIMER;
-    if (strcmp(str, "pos") == 0)
-        return MODE_POS;
-    return MODE_NONE;
-}*/
+    { "SPEED", motor_setSpeed },
+    { "ACCEL", motor_setAccel }
+};
+
+#define MOTOR_SET_COUNT (sizeof(motor_set_table)/sizeof(motor_set_table[0]))
+
+void motor_cmd_set(char *tokens[], int count)
+{
+    long id = strtol(tokens[2], NULL, 10);
+    long value = strtol(tokens[4], NULL, 10);
+
+    for (int i = 0; i < MOTOR_SET_COUNT; i++)
+    {
+        if (strcmp(tokens[3], motor_set_table[i].param) == 0)
+        {
+            motor_set_table[i].handler(id, value);
+            Transport_Send("OK*");
+            return;
+        }
+    }
+
+    Transport_Send("ERR PARAM UNKNOWN");
+}
+
+void led_cmd_set(char *tokens[], int count){
+
+}
+
+// DOMAIN
+
+static const SetDomainEntry set_domain_table[] =
+{
+    { "MOTOR", motor_cmd_set },
+    { "LED",   led_cmd_set   }
+};
+
+#define SET_DOMAIN_COUNT (sizeof(set_domain_table)/sizeof(set_domain_table[0]))
+
+void cmd_set(char *tokens[], int count)
+{
+    for (int i = 0; i < SET_DOMAIN_COUNT; i++)
+    {
+        if (strcmp(tokens[1], set_domain_table[i].domain) == 0)
+        {
+            set_domain_table[i].handler(tokens, count);
+            return;
+        }
+    }
+
+    Transport_Send("ERR DOMAIN UNKNOWN**");
+}
+
+
+
+
+
+
+
+
+
+
 
 uint8_t GetCommandId(char **tokens, int count)
 {
@@ -65,7 +104,7 @@ uint8_t GetCommandId(char **tokens, int count)
 // SET
 // ----------------------------
 
-void cmd_set(char *tokens[], int count)
+void cmd_setXXXXXXX(char *tokens[], int count)
 {
     int id = strtol(tokens[2], NULL, 10);
     long value = strtol(tokens[4], NULL, 10);

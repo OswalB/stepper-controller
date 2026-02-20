@@ -8,16 +8,32 @@ void LedPWM::init()
   digitalWrite(_pin, LOW);
 }
 
-void LedPWM::set(uint32_t periodMs, uint8_t dutyPercent)
+void LedPWM::set_time(uint32_t value){
+  _setTime = value;
+  apply();
+}
+
+void LedPWM::set_duty(uint8_t value){
+  _setDuty = value;
+  apply();
+}
+
+void LedPWM::start_led(uint32_t periodMs, uint8_t dutyPercent)
 {
   // OFF total
+  _setTime= periodMs;
+  _setDuty = dutyPercent;
+
   if (periodMs == 0 || dutyPercent == 0)
   {
     _periodMs = 0;
     _duty = 0;
     digitalWrite(_pin, LOW);
+    _isRunning = false;
     return;
   }
+
+  _isRunning = true;
 
   if (dutyPercent >= 100)
   {
@@ -48,4 +64,10 @@ void LedPWM::update()
     _state = !_state;
     digitalWrite(_pin, _state);
   }
+}
+
+void LedPWM::apply()
+{
+  if (_isRunning)
+    start_led(_setTime, _setDuty);
 }

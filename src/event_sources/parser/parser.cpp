@@ -148,13 +148,13 @@ void parser_parse(char *line)
     {
         if (strcmp(tokens[0], commandTable[i].name) == 0)
         {
-            ParseResult r = parser_validateStructure(commandTable[i].type, count, tokens);
+            /*ParseResult r = parser_validateStructure(commandTable[i].type, count, tokens);
 
             if (r != PARSE_OK)
             {
                 parser_sendError(r);
                 return;
-            }
+            }*/
             commandTable[i].handler(tokens, count);
             return;
         }

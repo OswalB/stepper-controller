@@ -18,15 +18,15 @@ void status_led_err_set(StatusLedErrState state)
     switch (state)
     {
     case ERR_LED_OFF:
-        ledError.set(0, 0);
+        ledError.start_led(0, 0);
         break;
 
     case ERR_LED_WARNING:
-        ledError.set(1000, 50);
+        ledError.start_led(1000, 50);
         break;
 
     case ERR_LED_ERROR:
-        ledError.set(200, 25);
+        ledError.start_led(200, 25);
         break;
     }
 }
@@ -37,15 +37,15 @@ void status_led_run_set(StatusLedRunState state)
     switch (state)
     {
     case RUN_LED_OFF:
-        ledRun.set(0, 0);
+        ledRun.start_led(0, 0);
         break;
 
     case RUN_LED_IDLE:
-        ledRun.set(3000, 10);
+        ledRun.start_led(3000, 10);
         break;
 
     case RUN_LED_RUNNING:
-        ledRun.set(500, 50);
+        ledRun.start_led(500, 50);
         break;
     }
 }
