@@ -11,7 +11,7 @@ public:
 
   // periodMs = duración total del ciclo
   // dutyPercent = 0–100
-  //void set(uint32_t periodMs, uint8_t dutyPercent);
+  // void set(uint32_t periodMs, uint8_t dutyPercent);
   void set_time(uint32_t value);
   void set_duty(uint8_t value);
   void start_led(uint32_t periodMs, uint8_t dutyPercent);

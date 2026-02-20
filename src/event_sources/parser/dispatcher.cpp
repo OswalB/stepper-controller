@@ -10,13 +10,68 @@
 void dispatcher_sendError(ParseResult err);
 long clamp(long value, long min, long max);
 // -------------------------------------------------
-// [SET] COMMAND
+// [SET]
 // -------------------------------------------------
-// PARAMS
 
-static void motor_setSpeed(long id, long value);
-static void motor_setAccel(long id, long value);
-static void motor_set_speed(long id, long value);
+// [SET] / LED / PARAMS
+
+void led_setDuty(long id, long value)
+{
+    value = clamp(value, 0, 100);
+
+    Event ev;
+    ev.type = EVT_SET_LED_DUTY;
+    ev.id = id;
+    ev.value = value;
+
+    eventQueue_push(ev);
+    Transport_Send(">>ok SET LED %02ld DUTY %ld ", id, value);
+}
+
+void led_setTime(long id, long value)
+{
+    value = clamp(value, 0, 60000);
+
+    Event ev;
+    ev.type = EVT_SET_LED_TIME;
+    ev.id = id;
+    ev.value = value;
+
+    eventQueue_push(ev);
+    Transport_Send(">>ok SET LED %02ld time %ld ", id, value);
+}
+
+// [SET] / LED / PARAMS / TABLE
+
+static const LedSetEntry led_set_table[] =
+    {
+        {"DUTY", led_setDuty},
+        {"TIME", led_setTime}};
+
+#define LED_SET_COUNT (sizeof(led_set_table) / sizeof(led_set_table[0]))
+
+void led_cmd_set(char *tokens[], int count)
+{
+    long id = strtol(tokens[2], NULL, 10);
+    long value = strtol(tokens[4], NULL, 10);
+    id = clamp(id, 0, 2);
+
+    for (int i = 0; i < LED_SET_COUNT; i++)
+    {
+        if (strcmp(tokens[3], led_set_table[i].param) == 0)
+        {
+            led_set_table[i].handler(id, value);
+            return;
+        }
+    }
+    dispatcher_sendError(PARSE_ERR_INVALID_PARAM);
+}
+
+// [SET] / MOTOR / PARAMS
+
+void motor_setAccel(long id, long value)
+{
+}
 
 void motor_setSpeed(long id, long value)
 {
@@ -24,9 +79,7 @@ void motor_setSpeed(long id, long value)
     Transport_Send(">>pendiente... SET MOTOR %02ld SPEED %ld ", id, value);
 }
 
-void motor_setAccel(long id, long value)
-{
-}
+// [SET] / MOTOR / PARAMS / TABLE
 
 static const MotorSetEntry motor_set_table[] =
     {
@@ -52,11 +105,25 @@ void motor_cmd_set(char *tokens[], int count)
     dispatcher_sendError(PARSE_ERR_INVALID_PARAM);
 }
 
-void led_cmd_set(char *tokens[], int count)
-{
-}
+// [SET] / DOMAINS
 
-// DOMAIN
+/*void led_cmd_set(char *tokens[], int count){
+    long id = strtol(tokens[2], NULL, 10);
+    long value = strtol(tokens[4], NULL, 10);
+    id = clamp(id, 0, 2);
+
+    for (int i = 0; i < LED_SET_COUNT; i++)
+    {
+        if (strcmp(tokens[3], led_set_table[i].param) == 0)
+        {
+            led_set_table[i].handler(id, value);
+            return;
+        }
+    }
+    dispatcher_sendError(PARSE_ERR_INVALID_PARAM);
+}*/
+
+// [SET] / DOMAINS / TABLE
 
 static const SetDomainEntry set_domain_table[] =
     {
@@ -78,85 +145,7 @@ void cmd_set(char *tokens[], int count)
     dispatcher_sendError(PARSE_ERR_INVALID_DOM);
 }
 
-uint8_t GetCommandId(char **tokens, int count)
-{
-    if (count < 2)
-        return 0;
-
-    int value = atoi(tokens[1]);
-
-    if (value < 0 || value > 255)
-        return 0;
-
-    return static_cast<uint8_t>(value);
-}
-
-// ----------------------------
-// SET
-// ----------------------------
-
-void cmd_setXXXXXXX(char *tokens[], int count)
-{
-    int id = strtol(tokens[2], NULL, 10);
-    long value = strtol(tokens[4], NULL, 10);
-
-    Event ev;
-    ev.type = EVT_ERROR;
-    ev.id = id;
-    ev.value = value;
-
-    eventQueue_push(ev);
-
-    Transport_Send(">OK %s %s %02d %s %ld ",
-                   tokens[0], tokens[1], id, tokens[3], value);
-}
-
-// ----------------------------
-// START
-// ----------------------------
-
-void cmd_start(char *tokens[], int count)
-{
-    uint8_t id = GetCommandId(tokens, count);
-
-    // -------------------------------------------------
-    // Si hay parámetro de velocidad → primero SET_SPEED
-    // -------------------------------------------------
-    if (count >= 3)
-    {
-        Event evSpeed;
-        evSpeed.type = EVT_SET_SPEED;
-        evSpeed.id = id;
-        // evSpeed.paramType = PARAM_INT;   // puedes permitir float si quieres
-        evSpeed.value = atol(tokens[2]);
-
-        eventQueue_push(evSpeed);
-        Transport_Send(">%s %u\r", "vel", evSpeed.value);
-    }
-
-    // -------------------------------------------------
-    // Luego siempre EVT_START
-    // -------------------------------------------------
-    Event evStart;
-    evStart.type = EVT_START;
-    evStart.id = id;
-    // evStart.paramType = PARAM_NONE;
-
-    eventQueue_push(evStart);
-    Transport_Send(">%s %u\r", "start", id);
-}
-
-void cmd_led(char *tokens[], int count)
-{
-    uint8_t id = GetCommandId(tokens, count);
-
-    Event evStart;
-    evStart.type = EVT_ERROR;
-    evStart.id = id;
-    // evStart.paramType = PARAM_NONE;
-
-    eventQueue_push(evStart);
-}
+void cmd_start(char *tokens[], int count) {}
 
 // --------------------------------------------
 // HELPERS

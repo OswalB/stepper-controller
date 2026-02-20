@@ -18,3 +18,4 @@ void status_leds_init(void);
 void status_led_err_set(StatusLedErrState state);
 void status_led_run_set(StatusLedRunState state);
 void status_leds_update(void);
+void status_led_set_duty(long id, long value);

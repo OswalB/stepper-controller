@@ -10,6 +10,12 @@ typedef struct
 {
     const char *param;
     SetParamHandler handler;
+} LedSetEntry;
+
+typedef struct
+{
+    const char *param;
+    SetParamHandler handler;
 } MotorSetEntry;
 
 typedef struct

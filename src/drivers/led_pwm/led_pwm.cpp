@@ -1,4 +1,6 @@
 #include "led_pwm.h"
+// #include "core/transport/transport.h"
+#include "core/transport/transport.h"
 
 LedPWM::LedPWM(uint8_t pin) : _pin(pin) {}
 
@@ -8,22 +10,23 @@ void LedPWM::init()
   digitalWrite(_pin, LOW);
 }
 
-void LedPWM::set_time(uint32_t value){
+void LedPWM::set_time(uint32_t value)
+{
   _setTime = value;
   apply();
 }
 
-void LedPWM::set_duty(uint8_t value){
+void LedPWM::set_duty(uint8_t value)
+{
   _setDuty = value;
   apply();
 }
 
 void LedPWM::start_led(uint32_t periodMs, uint8_t dutyPercent)
 {
-  // OFF total
-  _setTime= periodMs;
+  _setTime = periodMs;
   _setDuty = dutyPercent;
-
+  // OFF total
   if (periodMs == 0 || dutyPercent == 0)
   {
     _periodMs = 0;
@@ -68,6 +71,7 @@ void LedPWM::update()
 
 void LedPWM::apply()
 {
+  // Transport_Send("aply %s",_isRunning? "ON" : "OFF");
   if (_isRunning)
     start_led(_setTime, _setDuty);
 }

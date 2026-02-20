@@ -1,5 +1,5 @@
 #include "status_led.h"
-#include "led_pwm/led_pwm.h"
+#include "./drivers/led_pwm/led_pwm.h"
 
 static LedPWM ledError(A0);
 static LedPWM ledRun(A1);
@@ -46,6 +46,24 @@ void status_led_run_set(StatusLedRunState state)
 
     case RUN_LED_RUNNING:
         ledRun.start_led(500, 50);
+        break;
+    }
+}
+
+void status_led_set_duty(long id, long value)
+{
+    switch (id)
+    {
+    case 0:
+        ledError.set_duty((uint8_t)value);
+        break;
+
+    case 1:
+        ledRun.set_duty((uint8_t)value);
+        break;
+
+    default:
+        // opcional: error
         break;
     }
 }

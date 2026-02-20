@@ -2,6 +2,7 @@
 #include "core/events/event_queue.h"
 #include "core/events/event_types.h"
 #include "services/status_led/status_led.h"
+#include "drivers/led_pwm/led_pwm.h"
 
 typedef enum
 {
@@ -65,6 +66,11 @@ void machine_init(void)
         }
 
         break;
+    }
+
+    if (evt.type == EVT_SET_LED_DUTY)
+    {
+        status_led_set_duty(evt.id, evt.value);
     }
 }
 

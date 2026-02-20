@@ -3,6 +3,8 @@
 typedef enum
 {
     EVT_NONE = 0,
+    EVT_SET_LED_DUTY,
+    EVT_SET_LED_TIME,
     EVT_START,
     EVT_STOP,
     EVT_ERROR,
