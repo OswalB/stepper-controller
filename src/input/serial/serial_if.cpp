@@ -1,6 +1,6 @@
 #include <Arduino.h>
-#include "event_sources/serial_if/serial_if.h"
-#include "event_sources/parser/parser.h"
+#include "input/serial/serial_if.h"
+#include "input/command/parser.h"
 
 #define SERIAL_BAUDRATE 115200
 #define RX_BUFFER_SIZE 128

@@ -1,8 +1,8 @@
 #include "dispatcher.h"
-#include "core/events/event_types.h"
-#include "core/events/event_queue.h"
-#include "./core/transport/transport.h"
-#include "command_table.h"
+#include "core/event/event_types.h"
+#include "core/event/event_queue.h"
+#include "platform/transport/transport.h"
+#include "input/command/command_table.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -105,24 +105,6 @@ void motor_cmd_set(char *tokens[], int count)
     dispatcher_sendError(PARSE_ERR_INVALID_PARAM);
 }
 
-// [SET] / DOMAINS
-
-/*void led_cmd_set(char *tokens[], int count){
-    long id = strtol(tokens[2], NULL, 10);
-    long value = strtol(tokens[4], NULL, 10);
-    id = clamp(id, 0, 2);
-
-    for (int i = 0; i < LED_SET_COUNT; i++)
-    {
-        if (strcmp(tokens[3], led_set_table[i].param) == 0)
-        {
-            led_set_table[i].handler(id, value);
-            return;
-        }
-    }
-    dispatcher_sendError(PARSE_ERR_INVALID_PARAM);
-}*/
-
 // [SET] / DOMAINS / TABLE
 
 static const SetDomainEntry set_domain_table[] =
@@ -144,6 +126,10 @@ void cmd_set(char *tokens[], int count)
     }
     dispatcher_sendError(PARSE_ERR_INVALID_DOM);
 }
+
+// -------------------------------------------------
+// [START]
+// -------------------------------------------------
 
 void cmd_start(char *tokens[], int count) {}
 

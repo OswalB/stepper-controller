@@ -1,5 +1,5 @@
 #include "status_led.h"
-#include "./drivers/led_pwm/led_pwm.h"
+#include "drivers/led_pwm/led_pwm.h"
 
 static LedPWM ledError(A0);
 static LedPWM ledRun(A1);

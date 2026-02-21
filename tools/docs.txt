@@ -1,0 +1,108 @@
+PROJECT STRUCTURE
+
+├── src/
+│   ├── app/
+│   │   ├── app_init.cpp
+│   │   ├── app_init.h
+│   │   ├── app_run.cpp
+│   │   ├── app_run.h
+│   │   ├── main.cpp
+│   ├── core/
+│   │   ├── event/
+│   │   │   ├── dispatcher.cpp
+│   │   │   ├── dispatcher.h
+│   │   │   ├── event_queue.cpp
+│   │   │   ├── event_queue.h
+│   │   │   ├── event_types.h
+│   │   ├── fsm/
+│   │   │   ├── machine.cpp
+│   │   │   ├── machine.h
+│   ├── drivers/
+│   │   ├── led_pwm/
+│   │   │   ├── led_pwm.cpp
+│   │   │   ├── led_pwm.h
+│   ├── input/
+│   │   ├── command/
+│   │   │   ├── command_table.cpp
+│   │   │   ├── command_table.h
+│   │   │   ├── parser.cpp
+│   │   │   ├── parser.h
+│   │   ├── serial/
+│   │   │   ├── serial_if.cpp
+│   │   │   ├── serial_if.h
+│   ├── lib/
+│   │   ├── utils/
+│   │   │   ├── utils.cpp
+│   │   │   ├── utils.h
+│   ├── modules/
+│   │   ├── motor/
+│   │   │   ├── motor.cpp
+│   │   │   ├── motor.h
+│   │   │   ├── motor_config.cpp
+│   │   │   ├── motor_config.h
+│   │   │   ├── motor_system.cpp
+│   │   │   ├── motor_system.h
+│   │   ├── status_led/
+│   │   │   ├── status_led.cpp
+│   │   │   ├── status_led.h
+│   ├── platform/
+│   │   ├── transport/
+│   │   │   ├── transport.cpp
+│   │   │   ├── transport.h
+
+
+NUEVA INFRAESTRUCTRUCTURA
+
+-*-*-*-*---*-*------*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+
+src/
+│
+├── app/
+│   ├── app_init.cpp
+│   ├── app_run.cpp
+│   └── main.cpp
+│
+├── core/
+│   │
+│   ├── command/                    ← NUEVO SUBSISTEMA
+│   │   ├── command_node.h
+│   │   ├── command_tree.cpp
+│   │   ├── command_tree.h
+│   │   ├── command_resolver.cpp
+│   │   └── command_resolver.h
+│   │
+│   ├── event/
+│   │   ├── event_builder.cpp       ← NUEVO
+│   │   ├── event_builder.h
+│   │   ├── event_queue.cpp
+│   │   ├── event_queue.h
+│   │   └── event_types.h
+│   │
+│   └── fsm/
+│       ├── machine.cpp
+│       └── machine.h
+│
+├── input/
+│   ├── parser/                     ← SEPARADO DE COMMAND
+│   │   ├── parser.cpp
+│   │   └── parser.h
+│   │
+│   └── serial/
+│       ├── serial_if.cpp
+│       └── serial_if.h
+│
+├── modules/
+│   ├── motor/
+│   │   ├── motor.cpp
+│   │   ├── motor.h
+│   │   ├── motor_commands.cpp      ← NUEVO
+│   │   └── motor_commands.h
+│   │
+│   └── status_led/
+│       ├── status_led.cpp
+│       ├── status_led.h
+│       ├── status_led_commands.cpp ← NUEVO
+│       └── status_led_commands.h
+│
+├── drivers/
+└── platform/

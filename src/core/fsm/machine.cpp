@@ -1,7 +1,7 @@
 #include "core/fsm/machine.h"
-#include "core/events/event_queue.h"
-#include "core/events/event_types.h"
-#include "services/status_led/status_led.h"
+#include "core/event/event_queue.h"
+#include "core/event/event_types.h"
+#include "modules/status_led/status_led.h"
 #include "drivers/led_pwm/led_pwm.h"
 
 typedef enum
