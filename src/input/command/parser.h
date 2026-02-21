@@ -1,3 +1,12 @@
 #pragma once
+#include <stdbool.h>
 
-void parser_parse(char *line);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void parser_parse(const char* line);
+
+#ifdef __cplusplus
+}
+#endif

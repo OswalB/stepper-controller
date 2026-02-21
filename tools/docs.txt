@@ -55,6 +55,8 @@ NUEVA INFRAESTRUCTRUCTURA
 
 -*-*-*-*---*-*------*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
+serial_if → parser → command_resolver → event_builder → event_queue
+
 src/
 │
 ├── app/

@@ -1,33 +1,41 @@
 #include "parser.h"
-#include "command_table.h"
-#include "platform/transport/transport.h"
 #include <string.h>
 #include <stdio.h>
+
 #include "lib/utils/utils.h"
+#include "platform/transport/transport.h"
+#include "core/command/command_resolver.h"
+#include "core/event/event_builder.h"
+#include "core/event/event_queue.h"
 
-#define MAX_TOKENS 5
-/*
-
-
-*/
-// ----------------------------
-// Helpers
-// ----------------------------
-
+#define MAX_TOKENS 8
+#define MAX_TOKEN_LENGTH 32
 
 // --------------------------------------------
 // Tokenizador simple
 // --------------------------------------------
-static int tokenize(char *line, char *tokens[])
+static int tokenize(const char *line, char tokens[][MAX_TOKEN_LENGTH])
 {
     int count = 0;
 
-    char *token = strtok(line, " ");
+    const char *ptr = line;
 
-    while (token != NULL && count < MAX_TOKENS)
+    while (*ptr != '\0' && count < MAX_TOKENS)
     {
-        tokens[count++] = token;
-        token = strtok(NULL, " ");
+        while (*ptr == ' ')
+            ptr++;
+
+        if (*ptr == '\0')
+            break;
+
+        int len = 0;
+        while (*ptr != ' ' && *ptr != '\0' && len < MAX_TOKEN_LENGTH - 1)
+        {
+            tokens[count][len++] = *ptr++;
+        }
+
+        tokens[count][len] = '\0';
+        count++;
     }
 
     return count;
@@ -36,15 +44,15 @@ static int tokenize(char *line, char *tokens[])
 // --------------------------------------------
 // Parser principal
 // --------------------------------------------
-void parser_parse(char *line)
+void parser_parse(const char* line)
 {
-    char *tokens[MAX_TOKENS];
-    int count = tokenize(line, tokens);
+    char tokens[MAX_TOKENS][MAX_TOKEN_LENGTH];
+    int token_count = tokenize(line, tokens);
 
-    if (count == 0)
+    if (token_count == 0)
         return;
 
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < token_count; i++)
     {
         if (!utils_is_numeric(tokens[i]))
         {
@@ -52,13 +60,24 @@ void parser_parse(char *line)
         }
     }
 
-    for (int i = 0; i < commandCount; i++)
+    CommandMatch match;
+
+    if (!command_resolve(tokens, token_count, &match))
     {
-        if (strcmp(tokens[0], commandTable[i].name) == 0)
-        {
-            commandTable[i].handler(tokens, count);
-            return;
-        }
+        Transport_Send("ERR: Unknown command\n");
+        return;
     }
-    Transport_Send(">ERR CMMAND UNKNOW");
+
+    Event event;
+
+    if (!event_build_from_match(&match, &event))
+    {
+        Transport_Send("ERR: Cannot build event\n");
+        return;
+    }
+
+    event_queue_push(&event);
+    
+    Transport_Send("tk>%s >%s >%s >%s >%s", tokens[0], 
+         tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]);
 }
