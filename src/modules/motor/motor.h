@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "core/event/event_types.h"
+#include "core/types/event_types.h"
 
 typedef enum
 {

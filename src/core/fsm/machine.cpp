@@ -1,6 +1,6 @@
 #include "core/fsm/machine.h"
 #include "core/event/event_queue.h"
-#include "core/event/event_types.h"
+#include "core/types/event_types.h"
 #include "modules/status_led/status_led.h"
 #include "drivers/led_pwm/led_pwm.h"
 

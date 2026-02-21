@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+print("Script iniciado")
 # Carpetas a ignorar
 IGNORE_DIRS = {
     ".git",

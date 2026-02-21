@@ -44,7 +44,7 @@ static int tokenize(const char *line, char tokens[][MAX_TOKEN_LENGTH])
 // --------------------------------------------
 // Parser principal
 // --------------------------------------------
-void parser_parse(const char* line)
+void parser_parse(const char *line)
 {
     char tokens[MAX_TOKENS][MAX_TOKEN_LENGTH];
     int token_count = tokenize(line, tokens);
@@ -76,8 +76,13 @@ void parser_parse(const char* line)
         return;
     }
 
-    event_queue_push(&event);
-    
-    Transport_Send("tk>%s >%s >%s >%s >%s", tokens[0], 
-         tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]);
+    eventQueue_push(event);
+
+    Transport_Send("event>%s >%s >%s >%s >%s", tokens[0],
+                   tokens[1], tokens[2], tokens[3], tokens[4]);
+    Transport_Send("ev dom>%d id>%d param>%d value>%ld",
+               event.domain,
+               event.id,
+               event.param,
+               event.value);
 }
