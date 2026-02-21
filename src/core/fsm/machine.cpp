@@ -21,7 +21,36 @@ void machine_init(void)
 
 // Handler
 
-/*EventResult*/ void machine_handleEvent(Event evt)
+static void machine_handleEvent(const Event& evt)
+{
+    // 🔴 1. Eventos globales
+    if (evt.type == EVT_ERROR)
+    {
+        g_state = MS_ERROR;
+        return;
+    }
+
+    // 🔵 2. Delegación por dominio
+    switch (evt.domain)
+    {
+        case DOMAIN_MOTOR:
+            motor_handleEvent(evt);
+            break;
+
+        case DOMAIN_LED:
+            led_handleEvent(evt);
+            break;
+
+        case DOMAIN_SENSOR:
+            sensor_handleEvent(evt);
+            break;
+
+        default:
+            break;
+    }
+}
+/*
+void machine_handleEvent(Event evt)
 {
     if (evt.type == EVT_ERROR)
     {
@@ -72,6 +101,25 @@ void machine_init(void)
     {
         status_led_set_duty(evt.id, evt.value);
     }
+}
+*/
+
+static bool machine_isEventAllowed(const Event& evt)
+{
+    switch (g_state)
+    // uso: if (!machine_isEventAllowed(evt)) return;
+    {
+        case MS_IDLE:
+            if (evt.domain == DOMAIN_MOTOR &&
+                evt.param == PARAM_SPEED)
+                return false;
+            break;
+
+        case MS_ERROR:
+            return false;
+    }
+
+    return true;
 }
 
 void machine_update(void)
