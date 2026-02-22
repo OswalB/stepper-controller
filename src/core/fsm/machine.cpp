@@ -34,15 +34,15 @@ static void machine_handleEvent(const Event& evt)
     switch (evt.domain)
     {
         case DOMAIN_MOTOR:
-            motor_handleEvent(evt);
+            //motor_handleEvent(evt);
             break;
 
         case DOMAIN_LED:
-            led_handleEvent(evt);
+            status_led_handleEvent(evt);
             break;
 
         case DOMAIN_SENSOR:
-            sensor_handleEvent(evt);
+            //sensor_handleEvent(evt);
             break;
 
         default:

@@ -1,4 +1,5 @@
 #pragma once
+#include "core/types/event_types.h"
 
 typedef enum
 {
@@ -15,6 +16,8 @@ typedef enum
 } StatusLedRunState;
 
 void status_leds_init(void);
+void status_led_handleEvent(const Event& evt);
+
 void status_led_err_set(StatusLedErrState state);
 void status_led_run_set(StatusLedRunState state);
 void status_leds_update(void);

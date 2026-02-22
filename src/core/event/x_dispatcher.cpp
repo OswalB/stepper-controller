@@ -2,7 +2,7 @@
 #include "core/types/event_types.h"
 #include "core/event/event_queue.h"
 #include "platform/transport/transport.h"
-#include "input/command/command_table.h"
+#include "input/command/x_command_table.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>

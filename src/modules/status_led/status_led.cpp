@@ -1,8 +1,10 @@
 #include "status_led.h"
 #include "drivers/led_pwm/led_pwm.h"
+#include "platform/transport/transport.h"
 
 static LedPWM ledError(A0);
 static LedPWM ledRun(A1);
+//static Led_State g_ledState;  en este caso no se usa
 
 void status_leds_init(void)
 {
@@ -10,6 +12,11 @@ void status_leds_init(void)
     status_led_err_set(ERR_LED_OFF);
     ledRun.init();
     status_led_run_set(RUN_LED_OFF);
+}
+
+void status_led_handleEvent(const Event& evt)
+{
+Transport_Send("manejador de eventos>> %d ",evt.value);
 }
 
 void status_led_err_set(StatusLedErrState state)
