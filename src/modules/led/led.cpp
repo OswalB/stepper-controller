@@ -1,25 +1,25 @@
-#include "status_led.h"
+#include "led.h"
 #include "drivers/led_pwm/led_pwm.h"
 #include "platform/transport/transport.h"
 
 static LedPWM ledError(A0);
 static LedPWM ledRun(A1);
-//static Led_State g_ledState;  en este caso no se usa
+// static Led_State g_ledState;  en este caso no se usa
 
-void status_leds_init(void)
+void led_init(void)
 {
     ledError.init();
-    status_led_err_set(ERR_LED_OFF);
+    led_err_set(ERR_LED_OFF);
     ledRun.init();
-    status_led_run_set(RUN_LED_OFF);
+    led_run_set(RUN_LED_OFF);
 }
 
-void status_led_handleEvent(const Event& evt)
+void led_handleEvent(const Event &evt)
 {
-Transport_Send("manejador de eventos>> %d ",evt.value);
+    Transport_Send("manejador de eventos>> %d ", evt.value);
 }
 
-void status_led_err_set(StatusLedErrState state)
+void led_err_set(StatusLedErrState state)
 {
 
     switch (state)
@@ -38,7 +38,7 @@ void status_led_err_set(StatusLedErrState state)
     }
 }
 
-void status_led_run_set(StatusLedRunState state)
+void led_run_set(StatusLedRunState state)
 {
 
     switch (state)
@@ -57,7 +57,7 @@ void status_led_run_set(StatusLedRunState state)
     }
 }
 
-void status_led_set_duty(long id, long value)
+void led_set_duty(long id, long value)
 {
     switch (id)
     {
@@ -75,7 +75,7 @@ void status_led_set_duty(long id, long value)
     }
 }
 
-void status_leds_update(void)
+void led_update(void)
 {
     ledError.update();
     ledRun.update();

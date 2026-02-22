@@ -40,9 +40,9 @@
 │   │   │   ├── motor_config.h
 │   │   │   ├── motor_system.cpp
 │   │   │   ├── motor_system.h
-│   │   ├── status_led/
-│   │   │   ├── status_led.cpp
-│   │   │   ├── status_led.h
+│   │   ├── led/
+│   │   │   ├── led.cpp
+│   │   │   ├── led.h
 │   ├── platform/
 │   │   ├── transport/
 │   │   │   ├── transport.cpp

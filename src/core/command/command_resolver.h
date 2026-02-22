@@ -9,15 +9,14 @@
 
 typedef struct
 {
-    EventType  type;
+    EventType type;
     DomainType domain;
-    uint8_t    id;
-    ParamType  param;
-    int32_t    value;
+    uint8_t id;
+    ParamType param;
+    int32_t value;
 } CommandMatch;
 
 bool command_resolve(
     char tokens[][32],
     int token_count,
-    CommandMatch* out_match
-);
+    CommandMatch *out_match);

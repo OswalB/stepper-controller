@@ -81,8 +81,8 @@ void parser_parse(const char *line)
     Transport_Send("event>%s >%s >%s >%s >%s", tokens[0],
                    tokens[1], tokens[2], tokens[3], tokens[4]);
     Transport_Send("ev dom>%d id>%d param>%d value>%ld",
-               event.domain,
-               event.id,
-               event.param,
-               event.value);
+                   event.domain,
+                   event.id,
+                   event.param,
+                   event.value);
 }

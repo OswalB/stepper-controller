@@ -1,7 +1,7 @@
 #include "core/fsm/machine.h"
 #include "core/event/event_queue.h"
 #include "core/types/event_types.h"
-#include "modules/status_led/status_led.h"
+#include "modules/led/led.h"
 #include "drivers/led_pwm/led_pwm.h"
 
 typedef enum
@@ -16,12 +16,12 @@ static MachineState g_state;
 void machine_init(void)
 {
     g_state = MS_IDLE;
-    status_led_run_set(RUN_LED_IDLE);
+    led_run_set(RUN_LED_IDLE);
 }
 
 // Handler
 
-static void machine_handleEvent(const Event& evt)
+static void machine_handleEvent(const Event &evt)
 {
     // 🔴 1. Eventos globales
     if (evt.type == EVT_ERROR)
@@ -33,20 +33,20 @@ static void machine_handleEvent(const Event& evt)
     // 🔵 2. Delegación por dominio
     switch (evt.domain)
     {
-        case DOMAIN_MOTOR:
-            //motor_handleEvent(evt);
-            break;
+    case DOMAIN_MOTOR:
+        // motor_handleEvent(evt);
+        break;
 
-        case DOMAIN_LED:
-            status_led_handleEvent(evt);
-            break;
+    case DOMAIN_LED:
+        led_handleEvent(evt);
+        break;
 
-        case DOMAIN_SENSOR:
-            //sensor_handleEvent(evt);
-            break;
+    case DOMAIN_SENSOR:
+        // sensor_handleEvent(evt);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 /*
@@ -55,7 +55,7 @@ void machine_handleEvent(Event evt)
     if (evt.type == EVT_ERROR)
     {
         g_state = MS_ERROR;
-        status_led_err_set(ERR_LED_ERROR);
+        led_err_set(ERR_LED_ERROR);
         return;
     }
 
@@ -66,7 +66,7 @@ void machine_handleEvent(Event evt)
         if (evt.type == EVT_START)
         {
             g_state = MS_RUNNING;
-            status_led_run_set(RUN_LED_RUNNING);
+            led_run_set(RUN_LED_RUNNING);
         }
 
         break;
@@ -76,12 +76,12 @@ void machine_handleEvent(Event evt)
         if (evt.type == EVT_STOP)
         {
             g_state = MS_IDLE;
-            status_led_run_set(RUN_LED_IDLE);
+            led_run_set(RUN_LED_IDLE);
         }
         else if (evt.type == EVT_ERROR)
         {
             g_state = MS_ERROR;
-            status_led_err_set(ERR_LED_ERROR);
+            led_err_set(ERR_LED_ERROR);
         }
 
         break;
@@ -91,7 +91,7 @@ void machine_handleEvent(Event evt)
         if (evt.type == EVT_RESET)
         {
             g_state = MS_IDLE;
-            status_led_run_set(RUN_LED_IDLE);
+            led_run_set(RUN_LED_IDLE);
         }
 
         break;
@@ -99,24 +99,24 @@ void machine_handleEvent(Event evt)
 
     if (evt.type == EVT_SET_LED_DUTY)
     {
-        status_led_set_duty(evt.id, evt.value);
+        led_set_duty(evt.id, evt.value);
     }
 }
 */
 
-static bool machine_isEventAllowed(const Event& evt)
+static bool machine_isEventAllowed(const Event &evt)
 {
     switch (g_state)
     // uso: if (!machine_isEventAllowed(evt)) return;
     {
-        case MS_IDLE:
-            if (evt.domain == DOMAIN_MOTOR &&
-                evt.param == PARAM_SPEED)
-                return false;
-            break;
-
-        case MS_ERROR:
+    case MS_IDLE:
+        if (evt.domain == DOMAIN_MOTOR &&
+            evt.param == PARAM_SPEED)
             return false;
+        break;
+
+    case MS_ERROR:
+        return false;
     }
 
     return true;

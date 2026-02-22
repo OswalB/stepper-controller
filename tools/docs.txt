@@ -42,9 +42,9 @@ PROJECT STRUCTURE
 │   │   │   ├── motor_config.h
 │   │   │   ├── motor_system.cpp
 │   │   │   ├── motor_system.h
-│   │   ├── status_led/
-│   │   │   ├── status_led.cpp
-│   │   │   ├── status_led.h
+│   │   ├── led/
+│   │   │   ├── led.cpp
+│   │   │   ├── led.h
 │   ├── platform/
 │   │   ├── transport/
 │   │   │   ├── transport.cpp
@@ -100,11 +100,11 @@ src/
 │   │   ├── motor_commands.cpp      ← NUEVO
 │   │   └── motor_commands.h
 │   │
-│   └── status_led/
-│       ├── status_led.cpp
-│       ├── status_led.h
-│       ├── status_led_commands.cpp ← NUEVO
-│       └── status_led_commands.h
+│   └── led/
+│       ├── led.cpp
+│       ├── led.h
+│       ├── led_commands.cpp ← NUEVO
+│       └── led_commands.h
 │
 ├── drivers/
 └── platform/

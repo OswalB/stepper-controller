@@ -19,9 +19,9 @@ typedef enum
 
 typedef struct
 {
-    EventType   type; // Qué ocurrió
-    DomainType  domain; // MOTOR, LED, SENSOR
-    uint8_t     id;     // Instancia Quién lo generó / a quién aplica
-    ParamType   param;  // SPEED, POSITION, ...
-    int32_t     value;  // Dato asociado
+    EventType type;    // Qué ocurrió
+    DomainType domain; // MOTOR, LED, SENSOR
+    uint8_t id;        // Instancia Quién lo generó / a quién aplica
+    ParamType param;   // SPEED, POSITION, ...
+    int32_t value;     // Dato asociado
 } Event;

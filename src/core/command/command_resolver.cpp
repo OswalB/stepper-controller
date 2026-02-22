@@ -8,7 +8,7 @@
 bool command_resolve(
     char tokens[][32],
     int token_count,
-    CommandMatch* out_match)
+    CommandMatch *out_match)
 {
     if (token_count < 5)
         return false;
@@ -51,5 +51,3 @@ bool command_resolve(
 
     return true;
 }
-
- 
